@@ -6,16 +6,16 @@
 
 import torch
 
-import isaaclab.utils.math as math_utils
 
 
 def camera_follow(env):
+    from isaaclab.utils.math import transform_points
     if not hasattr(camera_follow, "smooth_camera_positions"):
         camera_follow.smooth_camera_positions = []
     robot_pos = env.unwrapped.scene["robot"].data.root_pos_w[0]
     robot_quat = env.unwrapped.scene["robot"].data.root_quat_w[0]
     camera_offset = torch.tensor([-3.0, 0.0, 0.5], dtype=torch.float32, device=env.device)
-    camera_pos = math_utils.transform_points(
+    camera_pos = transform_points(
         camera_offset.unsqueeze(0), pos=robot_pos.unsqueeze(0), quat=robot_quat.unsqueeze(0)
     ).squeeze(0)
     # camera_pos[2] = torch.clamp(camera_pos[2], min=0.1)
